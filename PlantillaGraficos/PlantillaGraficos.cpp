@@ -21,7 +21,7 @@ using namespace std;
 
 //Cada elemento que queramos renderear necesita un vertex array y un buffer
 vector<Vertice> triangulo;
-GLuint vertexArrayTriangulo;
+GLuint vertexArrayTrianguloID;
 GLuint bufferTrianguloID;
 
 
@@ -109,6 +109,36 @@ int main()
 	const char* rutaFragmentShader = "FragmentShader.shader";
 	shader = new Shader(rutaVertexShader, rutaFragmentShader);
 
+	//Mapeo de atributos
+	posicionID = glGetAttribLocation(shader->getID(), "posicion");
+
+	colorID = glGetAttribLocation(shader->getID(),"color");
+
+	shader->desenlazar();
+
+	//Crear el vertex array del triangulo
+	glGenVertexArrays(1,&vertexArrayTrianguloID);
+	glBindVertexArray(vertexArrayTrianguloID);
+
+	//Vertex Buffer
+	glGenBuffers(1,&bufferTrianguloID);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferTrianguloID);
+
+
+	//Asociar datos al buffer
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertice) * triangulo.size(), triangulo.data(), GL_STATIC_DRAW);
+
+	//Habilitar atributos de shader
+	glEnableVertexAttribArray(posicionID);
+	glEnableVertexAttribArray(colorID);
+
+
+	//Especificar a OpenGL como comunicarse
+	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
+
+
+
+
 	//Ciclo de dibujo (Draw Loop)
 	while (!glfwWindowShouldClose(window))
 	{
@@ -116,7 +146,7 @@ int main()
 		glViewport(0, 0, 600, 600);
 		//Establecemos el color de borrado.
 		glClearColor(1,0.8,0,1);
-		//Borrar!
+		//Borrar
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//Actualizar valores y dibujar
 		dibujar();
