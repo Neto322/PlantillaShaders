@@ -16,10 +16,10 @@ Shader::Shader(const char* rutaVertexShader, const char* rutaFragmentShader) {
 		string linea;
 		while (getline(vertexShaderStream, linea))
 		{
-			codigoVertexShader += linea + "/n";
+			codigoVertexShader += linea + "\n";
 		}
 		vertexShaderStream.close();
-	}
+	} 
 	else {
 		cout << "No se pudo abri el archivo" << endl;
 	}
@@ -32,7 +32,7 @@ Shader::Shader(const char* rutaVertexShader, const char* rutaFragmentShader) {
 		string linea;
 		while (getline(fragmentShaderStream, linea))
 		{
-			codigoFragmentShader += linea + "/n";
+			codigoFragmentShader += linea + "\n";
 		}
 		fragmentShaderStream.close();
 	}

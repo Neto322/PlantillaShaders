@@ -24,13 +24,47 @@ vector<Vertice> triangulo;
 GLuint vertexArrayTrianguloID;
 GLuint bufferTrianguloID;
 
+vector<Vertice> cuadrado;
+GLuint vertexArrayCuadradoID;
+GLuint bufferCuadradoID;
+
+
 
 //Instancia del shader
-Shader* shader;
+Shader *shader;
 
 //Identificadores para mapeo de atributos de entrada del vertex shader
 GLuint posicionID;
 GLuint colorID;
+
+void inicializarCuadrado() {
+	Vertice v1 = {
+		vec3(-0.2f,0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+
+	Vertice v2 = {
+		vec3(0.2f,0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+
+	Vertice v3 = {
+		vec3(0.2f,-0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+
+	Vertice v4 = {
+		vec3(0.2f,-0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+
+	cuadrado.push_back(v1);
+	cuadrado.push_back(v2);
+	cuadrado.push_back(v3);
+	cuadrado.push_back(v4);
+
+
+}
 
 void inicializarTriangulo()
 {
@@ -53,6 +87,7 @@ void inicializarTriangulo()
 	triangulo.push_back(v2);
 	triangulo.push_back(v3);
 
+
 }
 
 void dibujar() {
@@ -61,7 +96,14 @@ void dibujar() {
 	//Elegir el vertex array
 	glBindVertexArray(vertexArrayTrianguloID);
 	//Dibujar
+
+	//Triangulo
 	glDrawArrays(GL_TRIANGLES, 0, triangulo.size());
+
+	//Proceso de dibujado de Cuadrado
+	glBindVertexArray(vertexArrayCuadradoID);
+	glDrawArrays(GL_QUADS, 0, cuadrado.size());
+
 	//Soltar vertex array
 	glBindVertexArray(0);
 	//Desenlazar shader
@@ -112,6 +154,7 @@ int main()
 	cout << "Version Opengl: " << versionGL;
 
 	inicializarTriangulo();
+	inicializarCuadrado();
 
 	const char* rutaVertexShader = "VertexShader.shader";
 
@@ -145,6 +188,19 @@ int main()
 	//Especificar a OpenGL como comunicarse
 	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
 	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
+
+	//Proceso de inicializar Vertex Array para el cuadrado
+	glGenVertexArrays(1,&vertexArrayCuadradoID);
+	glBindVertexArray(vertexArrayCuadradoID);
+	glGenBuffers(1, &bufferCuadradoID);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferCuadradoID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertice) * cuadrado.size(), cuadrado.data(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(posicionID);
+	glEnableVertexAttribArray(colorID);
+	glVertexAttribPointer(posicionID,3,GL_FLOAT,GL_FALSE,sizeof(Vertice),0);
+	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
+
+
 
 	//Soltar el vertex array y el buffer
 	glBindVertexArray(0);
